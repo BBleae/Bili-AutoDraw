@@ -5,6 +5,10 @@ B站夏日绘板的自动绘图程序 支持读取png图片 支持多开账号
 
 https://github.com/komeiji-satori/convert_image_to_rgb
 
+Library属于这个项目
+
+https://github.com/rmccue/requests
+
 
 B站活动地址
 
