@@ -1,7 +1,7 @@
 <?php
 include('library/Requests.php'); //包含库
 ini_set("memory_limit","-1"); //取消内存限制(渣代码占内存太多)
-error_reporting(0); //参数为0则不输出报错信息, 输出全部报错信息请将参数改为 E_ALL
+error_reporting(E_ALL); //参数为0则不输出报错信息, 输出全部报错信息请将参数改为 E_ALL
 
 /*获取当前绘板图像*/
 $paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
@@ -53,7 +53,7 @@ function draw($x,$y,$color){
     );
     $header_count = count($hs);
     for ($i = 0;$i<$header_count;$i++) {
-        if ($GLOBALS['mark'][$i] == 1)
+        if (@$GLOBALS['mark'][$i] == 1)
             continue;
         else {
             $tpl['Cookie'] = $hs[$i];
@@ -96,6 +96,13 @@ function exec_draw($p)
 
 //从url获取图像的hash map 请求需要返回JSON格式
 function get_img_from_URL($url){
+    $dataStr = file_get_contents($url);
+
+    //削除UTF8-BOM
+    if (strpos($dataStr, "\xEF\xBB\xBF") === 0)
+        $dataStr = substr($dataStr, 3);  
+    return json_decode($dataStr,true);
+/*
     //初始化curl对象
 　　$ch = curl_init();
 　　//设置选项，包括URL
@@ -108,7 +115,8 @@ function get_img_from_URL($url){
 　　curl_close($ch);
 　　//返回数据
 　　return $output;
+*/
 }
 
 //从3Shain.me获取东方势力的像素画图纸并绘制
-exec_draw('http://www.3shain.me/data/all.json');
+exec_draw(get_img_from_URL('http://www.3shain.me/data/all.json'));
