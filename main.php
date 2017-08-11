@@ -107,4 +107,4 @@ function get_img_from_URL($url){
 }
 
 //从3Shain.me获取东方势力的像素画图纸并绘制
-exec_draw('http://www.3shain.me/data/2.json');
+exec_draw('http://www.3shain.me/data/all.json');
