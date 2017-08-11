@@ -61,6 +61,7 @@ function draw($x,$y,$color){
             if (json_decode($repo->body, true)['code'] == 0) {
                 echo "\n[$i]: ".$repo->body.": $x, $y, $color";
                 $GLOBALS['mark'][$i] = 1;
+                unset($GLOBALS[$i]);
                 return true;
             }
         }
