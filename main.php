@@ -6,6 +6,9 @@ error_reporting(0); //参数为0则不输出报错信息, 输出全部报错信�
 /*获取当前绘板图像*/
 $paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
 
+/*获取Cookies*/
+$hs = json_decode(file_get_contents("cookies.json"),true)['cookies'];
+
 /*http请求Header模板*/
 $tpl = array(
     'Origin' => 'https://live.bilibili.com',
@@ -20,7 +23,7 @@ $tpl = array(
 
 $mark = []; //标记该cookie在本次执行中是否被使用过
 
-$hs = ['cookie 1','cookie 2'......]; //$hs数组每一个元素存放一个账号的Cookie头
+//$hs = ['cookie 1','cookie 2'......]; //$hs数组每一个元素存放一个账号的Cookie头
 
 /*将字符串分割成数组 by Komeiji Satori
 function mbStrSplit($string, $len = 1) {
