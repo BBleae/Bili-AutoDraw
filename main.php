@@ -3,9 +3,6 @@ include('library/Requests.php'); //包含库
 ini_set("memory_limit","-1"); //取消内存限制(渣代码占内存太多)
 error_reporting(E_ALL); //参数为0则不输出报错信息, 输出全部报错信息请将参数改为 E_ALL
 
-/*获取当前绘板图像*/
-$paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
-
 /*获取Cookies*/
 $hs = json_decode(file_get_contents("cookies.json"),true)['cookies'];
 
@@ -57,6 +54,11 @@ function draw($x,$y,$color){
             continue;
         else {
             $tpl['Cookie'] = $hs[$i];
+			$tmp_bitmap = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
+			if ($tmp_bitmap[$y*1280+$x]==$color){
+				unset($tmp_bitmap);
+				return true;
+			}
             $repo = Requests::post($url, $tpl, $data);
             if (json_decode($repo->body, true)['code'] == 0) {
                 echo "\n[$i]: ".$repo->body.": $x, $y, $color";
@@ -83,7 +85,7 @@ function exec_draw($p)
     global $paint_str;
     $co = 921600;
     for ($i=0;$i<$co;$i++){
-        if ($p['bitmap'][$i] == 'Z')
+        if ($p['bitmap'][$i] == 'Z'/*||$p['bitmap'][$i] == '1'*//*忽略白色*/)
             continue;
         elseif ($p['bitmap'][$i] != $paint_str[$i]) {
             $c = $p['bitmap'][$i];
@@ -118,5 +120,8 @@ function get_img_from_URL($url){
 */
 }
 
+/*获取当前绘板图像*/
+$paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
+
 //从3Shain.me获取东方势力的像素画图纸并绘制
-exec_draw(get_img_from_URL('http://www.3shain.me/data/all.json'));
+exec_draw(get_img_from_URL('http://www.3shain.me/data/all2.json'));
