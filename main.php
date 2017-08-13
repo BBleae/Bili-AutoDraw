@@ -54,11 +54,13 @@ function draw($x,$y,$color){
             continue;
         else {
             $tpl['Cookie'] = $hs[$i];
+            /*
 			$tmp_bitmap = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
 			if ($tmp_bitmap[$y*1280+$x]==$color){
 				unset($tmp_bitmap);
 				return true;
 			}
+            */
             $repo = Requests::post($url, $tpl, $data);
             if (json_decode($repo->body, true)['code'] == 0) {
                 echo "\n[$i]: ".$repo->body.": $x, $y, $color";
@@ -82,9 +84,10 @@ bitmap示例:
 */
 function exec_draw($p)
 {
-    global $paint_str;
-    $co = 921600;
-    for ($i=0;$i<$co;$i++){
+    /*获取当前绘板图像*/
+    $paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
+
+    for ($i=0;$i<921600;$i++){
         if ($p['bitmap'][$i] == 'Z'/*||$p['bitmap'][$i] == '1'*//*忽略白色*/)
             continue;
         elseif ($p['bitmap'][$i] != $paint_str[$i]) {
@@ -119,9 +122,6 @@ function get_img_from_URL($url){
 　　return $output;
 */
 }
-
-/*获取当前绘板图像*/
-$paint_str = json_decode(file_get_contents("https://api.live.bilibili.com/activity/v1/SummerDraw/bitmap"), true)['data']['bitmap'];
 
 //从3Shain.me获取东方势力的像素画图纸并绘制
 exec_draw(get_img_from_URL('http://www.3shain.me/data/all2.json'));
